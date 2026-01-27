@@ -1,0 +1,22 @@
+name: Keep Supabase Storage Alive
+
+on:
+  schedule:
+    # كل 3 أيام (الأحد - الأربعاء - السبت) الساعة 00:00 UTC
+    - cron: '0 0 */3 * *'
+  workflow_dispatch:  # عشان تقدر تشغله يدويًا من Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Image 1
+        run: curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.SUPABASE_STORAGE_URL1 }}"
+
+      - name: Ping Image 2
+        if: always()
+        run: curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.SUPABASE_STORAGE_URL2 }}"
+
+      - name: Ping Image 3
+        if: always()
+        run: curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.SUPABASE_STORAGE_URL3 }}"

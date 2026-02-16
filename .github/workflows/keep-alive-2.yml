@@ -14,17 +14,17 @@ jobs:
           SUPABASE_URL: https://cioydgupnzyckmoklgsf.supabase.co
           SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpb3lkZ3Vwbnp5Y2ttb2tsZ3NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExOTM4MDYsImV4cCI6MjA4Njc2OTgwNn0.C1sqrGt2D7W3DsMYJRel3pZGjk5eDlKQRscZwfGJvs0
         run: |
-          TABLE_NAME="users"
+          TABLE_NAME="users"  # تأكد إن الجدول ده موجود، وإلا غيّره
           curl -s "${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=count(*)" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}"
 
       - name: Check Public Storage File
         run: |
-          IMG_URL="https://cioydgupnzyckmoklgsf.supabase.co/storage/v1/object/public/user-photos/keepalive-test.jpg"  # ← غيّر ده باللينك الجديد اللي ترفعه
+          IMG_URL="https://cioydgupnzyckmoklgsf.supabase.co/storage/v1/object/public/user-photos/WhatsApp%20Image%202026-02-15%20at%201.05.35%20AM.jpeg"  # ← غيّر ده باللينك الشغال اللي ترفعه
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$IMG_URL")
           if [ "$STATUS" = "200" ]; then
-            echo "Storage file accessible (HTTP 200)"
+            echo "Storage file accessible (HTTP 200) - Good!"
           else
-            echo "Storage file not accessible (HTTP $STATUS)"
+            echo "Storage file not accessible (HTTP $STATUS) - Upload the file or fix path"
           fi

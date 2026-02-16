@@ -1,22 +1,21 @@
-name: Keep Supabase Storage Alive
+name: Supabase Keep Alive
 
 on:
   schedule:
-    # كل 3 أيام (الأحد - الأربعاء - السبت) الساعة 00:00 UTC
-    - cron: '0 0 */3 * *'
-  workflow_dispatch:  # عشان تقدر تشغله يدويًا من Actions tab
+    - cron: '0 */12 * * *'  # كل 12 ساعة – كفاية جدًا
+  workflow_dispatch:
 
 jobs:
-  ping:
+  keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Image 1
-        run: curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.SUPABASE_STORAGE_URL1 }}"
-
-      - name: Ping Image 2
-        if: always()
-        run: curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.SUPABASE_STORAGE_URL2 }}"
-
-      - name: Ping Image 3
-        if: always()
-        run: curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.SUPABASE_STORAGE_URL3 }}"
+      - name: Ping Supabase Database
+        env:
+          SUPABASE_URL: https://cioydgupnzyckmoklgsf.supabase.co
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpb3lkZ3Vwbnp5Y2ttb2tsZ3NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExOTM4MDYsImV4cCI6MjA4Njc2OTgwNn0.C1sqrGt2D7W3DsMYJRel3pZGjk5eDlKQRscZwfGJvs0
+        run: |
+          TABLE_NAME="users"
+          RESPONSE=$(curl -s "https://cioydgupnzyckmoklgsf.supabase.co/rest/v1/${TABLE_NAME}?select=*&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+          echo "Database ping response: ${RESPONSE:-'No content (empty table OK)'}"
